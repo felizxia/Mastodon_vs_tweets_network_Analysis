@@ -113,5 +113,4 @@ while j!=10000000 and t!=300:
 open(pathTo + 'finished.txt', 'a').close()    
    
 
-
     
