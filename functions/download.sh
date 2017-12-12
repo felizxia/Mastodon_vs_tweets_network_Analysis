@@ -70,4 +70,4 @@ C:/Python27/python.exe ./natudon-outdoor.net/download.py &
 C:/Python27/python.exe ./mstdn.hokkaido.jp/download.py &
 C:/Python27/python.exe ./gbtdn.tokyo/download.py &
 C:/Python27/python.exe ./mastodon.sdf.org/download.py &
-C:/Python27/python.exe ./m6n.jp/download.py
+C:/Python27/python.exe ./m6n.jp/download.py 
