@@ -21,12 +21,11 @@ def follow_relationship_write(file):
                 for i in following:
                     user_id = i[0]
                     for j in i:
-                        if type(j) is list:
-                            for k in j:
-                                fol = k.get('id')
-                                dict[user_id] = fol
-                                following_net.write(str(user_id) + '\t' + str(fol))
-                                following_net.write('\n')
+                        for k in j:
+                            fol = k.get('id')
+                            dict[user_id] = fol
+                            following_net.write(str(user_id) + '\t' + str(fol))
+                            following_net.write('\n')
     print (len(list(dict.keys())))
     print (len(list(dict.values())))
 
@@ -44,14 +43,14 @@ def write_graph(file):
     nx.write_gml(fol,str(file) + ".gml")
     return fol
 
-# write_graph("user_followings")
-# write_graph("user_followers")
-# write_graph('instance_pairs')
-## read graph file, print basic information
-# followers= nx.read_gml("user_followers.gml")
-# followings= nx.read_gml("user_followings.gml")
-# print (nx.info(followers))
-# print (nx.info(followings))
+write_graph("user_followings")
+write_graph("user_followers")
+write_graph('instance_pairs')
+# read graph file, print basic information
+followers= nx.read_gml("user_followers.gml")
+followings= nx.read_gml("user_followings.gml")
+print (nx.info(followers))
+print (nx.info(followings))
 
 
 # random pick a node, calculate shortest path length
@@ -61,17 +60,17 @@ def degree_separate(file):
     import matplotlib.pylab as plt
     import numpy as np
     sample_n1=1000
-    sample_n2 =3000
-    # sample_n3 =8000
+    sample_n2 =3000  ## depends on how many nodes you have
+    sample_n3 =8000
     source_list_one = sample(file.nodes(),sample_n1)
     source_list_two = sample(file.nodes(),sample_n2)
-    # source_list_three = sample(file.nodes(),sample_n3)
+    source_list_three = sample(file.nodes(),sample_n3)
     sample_1000 = open('sample_on_1000_nodes_following.csv','w') # you can save it or not
     sample_3000 = open('sample_on_3000_nodes_following.csv','w')
-    # sample_8000 = open('sample_on_8000_nodes_following.csv','w')
+    sample_8000 = open('sample_on_8000_nodes_following.csv','w')
     counts_path_1=dict()
     counts_path_2=dict()
-    # counts_path_3=dict()
+    counts_path_3=dict()
     for time in range(2):
         time += 1
         if time==1:
@@ -88,28 +87,28 @@ def degree_separate(file):
                 path_valuestwo = list(dictwo.values())
                 for item in path_valuestwo:
                     counts_path_2[item] = counts_path_2.get(item, 0) + 1
-        # if time==3:
-        #     for i in source_list_three:
-        #         sample_8000.write(str(i)+"\t")
-        #         dicthree = nx.single_source_shortest_path_length(file, source=i)
-        #         path_valuesthree = list(dicthree.values())
-        #         for item in path_valuesthree:
-        #             counts_path_3[item] = counts_path_3.get(item, 0) + 1
+        if time==3:
+            for i in source_list_three:
+                sample_8000.write(str(i)+"\t")
+                dicthree = nx.single_source_shortest_path_length(file, source=i)
+                path_valuesthree = list(dicthree.values())
+                for item in path_valuesthree:
+                    counts_path_3[item] = counts_path_3.get(item, 0) + 1
     print(counts_path_1) # check path dictionary
     print(counts_path_2)
-    # print(counts_path_3)
+    print(counts_path_3)
     r1, g1, b1 = np.random.uniform(0, 1, 3)
     r2, g2, b2 = np.random.uniform(0, 1, 3)
-    # r3, g3, b3 = np.random.uniform(0, 1, 3)
+    r3, g3, b3 = np.random.uniform(0, 1, 3)
     x1,y1 = zip(*counts_path_1.items())
     x2,y2 = zip(*counts_path_2.items())
-    # x3,y3= zip(*counts_path_3.items())
+    x3,y3= zip(*counts_path_3.items())
     y1= tuple(v/sum(y1)for v in y1)
     y2= tuple(v/sum(y2)for v in y2)
-    # y3= tuple(v/sum(y3)for v in y3)
+    y3= tuple(v/sum(y3)for v in y3)
     plt.plot(x1,y1,'ks-',markevery=range(len(x1)),markersize=5, markerfacecolor='none',markeredgewidth=1.5,markeredgecolor=(r1, g1, b1 ,1))
     plt.plot(x2,y2,'ks-',markevery=range(len(x2)),markersize=5, markerfacecolor='none',markeredgewidth=1.5,markeredgecolor=(r2, g2, b2 ,1))
-    # plt.plot(x3,y3,'ks-',markevery=range(len(x3)),markersize=5, markerfacecolor='none',markeredgewidth=1.5,markeredgecolor=(r3, g3, b3,1))
+    plt.plot(x3,y3,'ks-',markevery=range(len(x3)),markersize=5, markerfacecolor='none',markeredgewidth=1.5,markeredgecolor=(r3, g3, b3,1))
     plt.legend(['1000 sample', '3000 sample', '8000 sample'], loc='upper right')
     plt.ylabel('probability')
     plt.xlabel('Distance from the seed')
@@ -118,8 +117,8 @@ def degree_separate(file):
     plt.savefig('degree_of_separation_'+str(file)+'.png')
 
 pair= nx.read_gml('instance_pairs.gml')
-# degree_separate(pair)
-# degree_separate(followings)
+degree_separate(pair)
+degree_separate(followings)
 # cdf distribution of graphs
 
 def degree_distribution_cdf(file):
@@ -186,16 +185,16 @@ def degree_distribution_cdf(file):
         y = [float(i) / sum(y) for i in y]
         y = cumsum(y)
         plt.plot(x, y, 'bo')
-        # plt.xscale('log')
-        # plt.yscale('log')
-        # for xy in zip(x, y):  # <--
-        #     ax.annotate('(%s, %s)' % xy, xy=xy, textcoords='data')
+        plt.xscale('log')
+        plt.yscale('log')
+        for xy in zip(x, y):  # <--
+            ax.annotate('(%s, %s)' % xy, xy=xy, textcoords='data')
         plt.legend(['out_Degree'])
         plt.xlabel('$K$', fontsize=20)
         plt.ylabel('$P_K$', fontsize=20)
         plt.title('$Degree\,Distribution\,of\,Instances\,Pairs$', fontsize=20)
         plt.show()
-# degree_separation_cdf("user_followings")
-# degree_separation_cdf("user_followers")
-# degree_distribution_cdf("instance_pairs_in")
+degree_separation_cdf("user_followings")
+degree_separation_cdf("user_followers")
+degree_distribution_cdf("instance_pairs_in")
 degree_distribution_cdf("instance_pairs_out")
